@@ -22,6 +22,8 @@ def build_tree_from_directory(source_directory):
 
 
 def export_tree_as_json(mt):
+    if not hasattr(mt, 'keys'):
+        mt.keys = []
     return json.dumps((mt.keys, mt.get_all_hex_chains()))
 
 
