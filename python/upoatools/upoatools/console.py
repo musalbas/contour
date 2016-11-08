@@ -35,6 +35,13 @@ def btcimportkey(key):
 
 @cli.command()
 def btclistaddresses():
-    """List imported Bitcoin addresses."""
+    """List Bitcoin addresses."""
     for address in btc.keys():
         click.echo(address)
+
+
+@cli.command()
+@click.argument('address')
+@click.argument('input_file')
+def btccommittree(address, input_file):
+    """Commit a merkle tree to the Bitcoin blockchain."""
