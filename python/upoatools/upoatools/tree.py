@@ -1,3 +1,4 @@
+import json
 import os
 
 from merkle import MerkleTree
@@ -5,13 +6,20 @@ from merkle import MerkleTree
 
 def build_tree_from_directory(source_directory):
     mt = MerkleTree()
+    filenames = next(os.walk(source_directory))[2]
 
-    filepaths = [os.path.join(source_directory, filename) for filename in next(os.walk(source_directory))[2]]
-    for filepath in filepaths:
-        filehandle = open(filepath)
+    for filename in filenames:
+        filehandle = open(os.path.join(source_directory, filename))
         filedata = filehandle.read()
         filehandle.close()
 
         mt.add(filedata)
 
-    print mt.build()
+    mt.build()
+    mt.keys = filenames
+
+    return mt
+
+
+def export_tree_as_json(mt):
+    return json.dumps((mt.keys, mt.get_all_hex_chains()))
