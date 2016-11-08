@@ -8,6 +8,9 @@ setup(
     install_requires=[
         'click',
         'merkle',
+        'pycoin',
+        'appdirs',
+        'configobj'
     ],
     entry_points='''
         [console_scripts]

@@ -1,11 +1,14 @@
 import click
 
+import btc
 import tree
+from localconfig import config
 
 
 @click.group()
 def cli():
     """Tools for Untrusted Proofs of Auditability."""
+
 
 @cli.command()
 @click.argument('source_directory')
@@ -20,3 +23,18 @@ def buildtree(source_directory, output_file):
     filehandle.close()
 
     click.echo("Merkle tree saved to output file.")
+
+
+@cli.command()
+@click.argument('key')
+def btcimportkey(key):
+    """Import a Bitcoin private key."""
+    address = btc.import_key(key)
+    click.echo("Key for address %s imported." % address)
+
+
+@cli.command()
+def btclistaddresses():
+    """List imported Bitcoin addresses."""
+    for address in btc.keys():
+        click.echo(address)
