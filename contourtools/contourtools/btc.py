@@ -4,7 +4,8 @@ from pycoin.key import Key
 from pycoin.tx import script, Tx
 from pycoin.tx.tx_utils import sign_tx
 from pycoin.tx.TxOut import TxOut, standard_tx_out_script
-from pycoin.services.blockchain_info import spendables_for_address, broadcast_tx
+from pycoin.services.providers import spendables_for_address
+from pycoin.servies.blockchain_info import BlockchainInfoProvider
 
 from localconfig import config
 
@@ -33,7 +34,12 @@ def _send_op_return_tx(address, message, fee=10000):
     tx = Tx(version=1, txs_in=inputs, txs_out=outputs)
     tx.set_unspents(spendables)
     sign_tx(tx, wifs=[key.wif()])
-    broadcast_tx(tx)
+    _broadcast_tx(tx)
+
+
+def _broadcast_tx(tx):
+    blockchain_info_provider = BlockchainInfoProvider('BTC')
+    blockchain_info_provider.broadcast_tx(tx)
 
 
 def import_key(key_text):
