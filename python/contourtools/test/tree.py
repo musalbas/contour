@@ -2,7 +2,7 @@ import unittest
 
 from merkle import MerkleTree
 
-from upoatools.tree import *
+from contourtools.tree import *
 
 class TestTree(unittest.TestCase):
     def setUp(self):

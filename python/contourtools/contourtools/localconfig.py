@@ -5,13 +5,13 @@ from configobj import ConfigObj
 
 # Create configuration directory in case it does not exist.
 try:
-    os.makedirs(user_config_dir('upoatools'))
+    os.makedirs(user_config_dir('contourtools'))
 except OSError:
-    if not os.path.isdir(user_config_dir('upoatools')):
+    if not os.path.isdir(user_config_dir('contourtools')):
         raise
 
 # Determine cross-platform configuration file path.
-configfile = os.path.join(user_config_dir('upoatools'), 'config')
+configfile = os.path.join(user_config_dir('contourtools'), 'config')
 
 # Create configuration object.
 config = ConfigObj(configfile)

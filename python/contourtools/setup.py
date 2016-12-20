@@ -2,9 +2,9 @@ from setuptools import setup
 
 
 setup(
-    name='upoatools',
+    name='contourtools',
     version='0.1',
-    packages=['upoatools'],
+    packages=['contourtools'],
     install_requires=[
         'click',
         'merkle',
@@ -14,6 +14,6 @@ setup(
     ],
     entry_points='''
         [console_scripts]
-        upoatools=upoatools.console:cli
+        contourtools=contourtools.console:cli
     ''',
 )
