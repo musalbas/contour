@@ -7,7 +7,7 @@ from localconfig import config
 
 @click.group()
 def cli():
-    """Tools for Untrusted Proofs of Auditability."""
+    """Tools for Contour."""
 
 
 @cli.command()
