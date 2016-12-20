@@ -10,9 +10,7 @@ from pycoin.services.blockchain_info import BlockchainInfoProvider
 from localconfig import config
 
 
-def _send_op_return_tx(address, message, fee=10000):
-    key = get_key(address)
-
+def send_op_return_tx(key, message, fee=10000):
     if len(message) > 80:
         raise ValueError("message must not be longer than 80 bytes")
     message = hexlify(raw_message.encode()).decode('utf8')
