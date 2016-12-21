@@ -3,19 +3,32 @@ from binascii import hexlify
 from pycoin.key import Key
 from pycoin.tx import script, Tx
 from pycoin.tx.tx_utils import sign_tx
-from pycoin.tx.TxOut import TxOut, standard_tx_out_script
-from pycoin.services.providers import spendables_for_address
+from pycoin.tx.TxOut import TxOut
+from pycoin.ui import standard_tx_out_script
 from pycoin.services.blockchain_info import BlockchainInfoProvider
+from pycoin.services.blockcypher import BlockcypherProvider
 
 from localconfig import config
 
 
+def _broadcast_tx(tx):
+    blockcypher_provider = BlockcypherProvider('BTC')
+    return blockcypher_provider.broadcast_tx(tx)
+
+
+def _spendables_for_address(address):
+    blockchain_info_provider = BlockchainInfoProvider('BTC')
+    return blockchain_info_provider.spendables_for_address(address)
+
+
 def send_op_return_tx(key, message, fee=10000):
+    address = key.address()
+
     if len(message) > 80:
         raise ValueError("message must not be longer than 80 bytes")
-    message = hexlify(raw_message.encode()).decode('utf8')
+    message = hexlify(message).decode('utf8')
 
-    spendables = spendables_for_address(bitcoin_address)
+    spendables = _spendables_for_address(address)
     btc_sum = sum(spendable.coin_value for spendable in spendables)
     if btc_sum < fee:
         raise Exception("not enough bitcoin to cover fee")
@@ -32,12 +45,8 @@ def send_op_return_tx(key, message, fee=10000):
     tx = Tx(version=1, txs_in=inputs, txs_out=outputs)
     tx.set_unspents(spendables)
     sign_tx(tx, wifs=[key.wif()])
-    _broadcast_tx(tx)
 
-
-def _broadcast_tx(tx):
-    blockchain_info_provider = BlockchainInfoProvider('BTC')
-    blockchain_info_provider.broadcast_tx(tx)
+    return tx
 
 
 def import_key(key_text):

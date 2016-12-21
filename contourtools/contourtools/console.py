@@ -1,3 +1,5 @@
+from binascii import hexlify
+
 import click
 
 import btc
@@ -51,5 +53,8 @@ def btccommittree(address, input_file):
     fh.close()
 
     root = mt.get_chain(0)[-1][0]
-    key = config.get_key(address)
-    btc.send_op_return_tx(key, root)
+    key = btc.get_key(address)
+    tx = btc.send_op_return_tx(key, root)
+
+    click.echo("Transaction committing tree %s sucessfully broadcast." % hexlify(root).decode('utf8'))
+    click.echo("Transaction hash: %s." % tx.id())
