@@ -7,7 +7,6 @@ setup(
     packages=['contourtools'],
     install_requires=[
         'click',
-        'merkle',
         'appdirs',
         'configobj'
     ],

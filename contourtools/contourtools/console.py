@@ -1,6 +1,7 @@
 from binascii import hexlify
 
 import click
+from pycoin.tx import Tx
 
 import btc
 import tree
@@ -72,4 +73,19 @@ def btccommittree(address, input_file):
 @click.argument('input_file')
 def btcattachblock(input_file):
     """After confirmation, attach block and merkle path details to a committed merkle tree file."""
-    pass
+    filehandle = open(input_file)
+    mt = tree.import_tree_from_json(filehandle.read())
+    mt.build()
+    filehandle.close()
+
+    tx = Tx.from_hex(mt.txdata)
+
+    click.echo("Downloading block for transaction %s..." % tx.id())
+    mt.blockpath = btc.get_block_path_for_tx(tx)
+
+    mt_json = tree.export_tree_as_json(mt)
+    filehandle = open(input_file, 'w')
+    filehandle.write(mt_json)
+    filehandle.close()
+
+    click.echo("Block path data added to input file.")

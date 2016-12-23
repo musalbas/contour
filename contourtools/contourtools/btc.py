@@ -7,18 +7,58 @@ from pycoin.tx.TxOut import TxOut
 from pycoin.ui import standard_tx_out_script
 from pycoin.services.blockchain_info import BlockchainInfoProvider
 from pycoin.services.blockcypher import BlockcypherProvider
+from pycoin.encoding import double_sha256
+import merkle
+from merkle import MerkleTree
 
 from localconfig import config
 
 
+class DoubleSHA256(object):
+    def __init__(self, data):
+        self.data = data
+
+    def digest(self):
+        return double_sha256(self.data)
+
+
 def _broadcast_tx(tx):
-    provider = BlockcypherProvider('BTC')
+    provider = BlockcypherProvider(netcode='BTC')
     return provider.broadcast_tx(tx)
 
 
 def _spendables_for_address(address):
-    provider = BlockchainInfoProvider('BTC')
+    provider = BlockchainInfoProvider(netcode='BTC')
     return provider.spendables_for_address(address)
+
+
+def _block(hash):
+    provider = BlockchainInfoProvider(netcode='BTC')
+    return provider.block(hash)
+
+
+def _block_hash_for_tx(tx):
+    provider = BlockcypherProvider(netcode='BTC')
+    return provider.block_hash_for_tx(tx)
+
+
+def get_block_path_for_tx(tx):
+    block_hash = _block_hash_for_tx(tx)
+    if block_hash is None:
+        raise Exception("this transaction is unconfirmed")
+    block = _block(block_hash)
+
+    txhashes = []
+    for i in range(len(block.txs)):
+        blocktx = block.txs[i]
+        if blocktx.id() == tx.id():
+            txindex = i
+        txhashes.append(blocktx.hash().encode('hex'))
+
+    merkle.hash_function = DoubleSHA256
+    mt = MerkleTree(txhashes, True)
+    mt.build(bitcoin=True)
+    return (block.as_blockheader().hash().encode('hex'), mt.get_hex_chain(txindex))
 
 
 def send_op_return_tx(key, message, fee=10000):
