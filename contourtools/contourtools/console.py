@@ -56,5 +56,13 @@ def btccommittree(address, input_file):
     key = btc.get_key(address)
     tx = btc.send_op_return_tx(key, root)
 
+    mt.txdata = tx.as_hex()
+    mt_json = tree.export_tree_as_json(mt)
+    filehandle = open(input_file, 'w')
+    filehandle.write(mt_json)
+    filehandle.close()
+
     click.echo("Transaction committing tree %s sucessfully broadcast." % hexlify(root).decode('utf8'))
     click.echo("Transaction hash: %s." % tx.id())
+    click.echo()
+    click.echo("Transaction data added to input file.")

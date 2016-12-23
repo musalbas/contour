@@ -46,6 +46,8 @@ def send_op_return_tx(key, message, fee=10000):
     tx.set_unspents(spendables)
     sign_tx(tx, wifs=[key.wif()])
 
+    _broadcast_tx(tx)
+
     return tx
 
 
