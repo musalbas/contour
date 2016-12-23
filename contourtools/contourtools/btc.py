@@ -5,6 +5,7 @@ from pycoin.tx import script, Tx
 from pycoin.tx.tx_utils import sign_tx
 from pycoin.tx.TxOut import TxOut
 from pycoin.ui import standard_tx_out_script
+from pycoin.services.blockchain_info import BlockchainInfoProvider
 from pycoin.services.blockcypher import BlockcypherProvider
 
 from localconfig import config
@@ -16,7 +17,7 @@ def _broadcast_tx(tx):
 
 
 def _spendables_for_address(address):
-    provider = BlockcypherProvider('BTC')
+    provider = BlockchainInfoProvider('BTC')
     return provider.spendables_for_address(address)
 
 
