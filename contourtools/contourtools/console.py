@@ -66,3 +66,10 @@ def btccommittree(address, input_file):
     click.echo("Transaction hash: %s." % tx.id())
     click.echo()
     click.echo("Transaction data added to input file.")
+
+
+@cli.command()
+@click.argument('input_file')
+def btcattachblock(input_file):
+    """After confirmation, attach block and merkle path details to a committed merkle tree file."""
+    pass
