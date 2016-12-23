@@ -4,6 +4,7 @@ from merkle import MerkleTree
 
 from contourtools.tree import *
 
+
 class TestTree(unittest.TestCase):
     def setUp(self):
         mt = MerkleTree()

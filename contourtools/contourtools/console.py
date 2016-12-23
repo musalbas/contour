@@ -47,10 +47,10 @@ def btclistaddresses():
 @click.argument('input_file')
 def btccommittree(address, input_file):
     """Commit a merkle tree to the Bitcoin blockchain."""
-    fh = open(input_file)
-    mt = tree.import_tree_from_json(fh.read())
+    filehandle = open(input_file)
+    mt = tree.import_tree_from_json(filehandle.read())
     mt.build()
-    fh.close()
+    filehandle.close()
 
     root = mt.get_chain(0)[-1][0]
     key = btc.get_key(address)
