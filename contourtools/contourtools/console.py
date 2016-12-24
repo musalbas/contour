@@ -1,4 +1,5 @@
 from binascii import hexlify
+import json
 
 import click
 from pycoin.tx import Tx
@@ -89,3 +90,24 @@ def btcattachblock(input_file):
     filehandle.close()
 
     click.echo("Block path data added to input file.")
+
+
+@cli.command()
+@click.argument('input_file')
+@click.argument('output_file')
+@click.argument('key')
+def inclusionproof(input_file, output_file, key):
+    """Get the inclusion proof for a specific key."""
+    filehandle = open(input_file)
+    mt = tree.import_tree_from_json(filehandle.read())
+    mt.build()
+    filehandle.close()
+
+    keyindex = mt.keys.index(key)
+    inclusionproof = (mt.txdata, mt.blockpath, mt.get_hex_chain(keyindex))
+
+    filehandle = open(output_file, 'w')
+    filehandle.write(json.dumps(inclusionproof))
+    filehandle.close()
+
+    click.echo("Inclusion proof written to output file.")
