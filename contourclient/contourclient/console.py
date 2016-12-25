@@ -1,3 +1,5 @@
+"""Console application for Contour client."""
+
 import click
 
 
@@ -7,7 +9,7 @@ def cli():
 
 
 @cli.command()
-@click.argument('input_file')
-def verifyinclusionproof(input_file):
+@click.argument('proof_file')
+def verifyinclusionproof(proof_file):
     """Verify an inclusion proof."""
     pass

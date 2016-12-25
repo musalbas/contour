@@ -1,3 +1,5 @@
+"Local configuration file management."
+
 import os
 
 from appdirs import user_config_dir

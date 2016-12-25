@@ -1,3 +1,5 @@
+"""Setup for Contour client."""
+
 from setuptools import setup
 
 

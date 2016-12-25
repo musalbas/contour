@@ -1,3 +1,5 @@
+"""Setup file for Contour tools."""
+
 from setuptools import setup
 
 
