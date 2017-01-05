@@ -1,4 +1,4 @@
-"Local configuration file management."
+"""Local configuration file management."""
 
 import os
 
