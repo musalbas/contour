@@ -9,6 +9,8 @@ setup(
     packages=['contourclient'],
     install_requires=[
         'click',
+        'appdirs',
+        'configobj',
     ],
     entry_points='''
         [console_scripts]
