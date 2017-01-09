@@ -1,5 +1,8 @@
 """API for Contour client."""
 
+from merkle import check_hex_chain
+from pycoin.block import BlockHeader
+
 from contourclient.btcnet import BlockchainManager
 
 
@@ -26,5 +29,8 @@ def verify_inclusion_proof(proof):
     Args:
         proof: the proof information tuple.
     Returns:
-        A tuple where the first element is a boolean representing if the proof verifies, and the second element is the number of confirmations the proof's block has.
+        A tuple where the first element is a boolean representing if the proof verifies, the second element is the number of confirmations the proof's block has, and the third element is the hash being proved.
     """
+    # Check that the block is in the blockchain
+    blockheader = BlockHeader.from_bin(bytes.fromhex(proof[1][0]))
+    print(blockheader)

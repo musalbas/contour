@@ -1,6 +1,7 @@
 """Console application for Contour client."""
 
 import logging
+import json
 import sys
 
 import click
@@ -39,7 +40,13 @@ def cli():
 @click.argument('proof_file')
 def verifyinclusionproof(proof_file):
     """Verify an inclusion proof."""
-    pass
+    filehandle = open(proof_file)
+    proof_file_data = filehandle.read()
+    filehandle.close()
+
+    proof = json.loads(proof_file_data)
+    verification = api.verify_inclusion_proof(proof)
+    click.echo(verification)
 
 
 @cli.command()
