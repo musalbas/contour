@@ -38,7 +38,7 @@ def cli():
 
 @cli.command()
 @click.argument('proof_file')
-def verifyinclusionproof(proof_file):
+def verifyproof(proof_file):
     """Verify an inclusion proof."""
     filehandle = open(proof_file)
     proof_file_data = filehandle.read()
