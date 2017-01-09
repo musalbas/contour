@@ -10,7 +10,8 @@ from pycoin.ui import standard_tx_out_script
 from pycoin.services.blockchain_info import BlockchainInfoProvider
 from pycoin.services.blockcypher import BlockcypherProvider
 from pycoin.encoding import double_sha256
-from merkle import MerkleTree, hash_function
+from merkle import MerkleTree
+import merkle
 
 from contourtools.localconfig import config
 
@@ -105,7 +106,7 @@ def get_block_path_for_tx(tx):
             txindex = i
         txhashes.append(hexlify(blocktx.hash()).decode('utf8'))
 
-    hash_function = DoubleSHA256
+    merkle.hash_function = DoubleSHA256
     mt = MerkleTree(txhashes, prehashed=True)
     mt.build(bitcoin=True)
 
