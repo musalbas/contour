@@ -99,7 +99,7 @@ def btcattachblock(batch_file):
 @click.argument('batch_file')
 @click.argument('output_file')
 @click.argument('item')
-def inclusionproof(batch_file, output_file, key):
+def inclusionproof(batch_file, output_file, item):
     """Save the inclusion proof for a specific item (file) to an output file."""
     filehandle = open(batch_file)
     batch_file_data = filehandle.read()
@@ -108,7 +108,7 @@ def inclusionproof(batch_file, output_file, key):
     mt = tree.import_tree_from_json(batch_file_data)
     mt.build()
 
-    inclusionproof = tree.get_inclusion_proof(mt)
+    inclusionproof = tree.get_inclusion_proof(item)
 
     filehandle = open(output_file, 'w')
     filehandle.write(json.dumps(inclusionproof))

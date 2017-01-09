@@ -118,5 +118,5 @@ def get_inclusion_proof(mt, item_key):
         A tuple containing (txdata, blockpath, item_merkle_proof).
     """
     item_index = mt.keys.index(item_key)
-    inclusionproof = (mt.txdata, mt.blockpath, mt.get_hex_chain(itemindex))
+    inclusionproof = (mt.txdata, mt.blockpath, mt.get_hex_chain(item_index))
     return inclusionproof
