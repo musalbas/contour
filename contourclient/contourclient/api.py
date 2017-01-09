@@ -3,16 +3,17 @@
 from contourclient.btcnet import BlockchainManager
 
 
-def sync(index_change_callback=None):
+def sync(timeout=5, length_change_callback=None):
     """
     Sync to the latest blockchain headers.
 
     Args:
-        index_change_callback: a function to call with args (index) when the latest blockchain index changes.
+        timeout: the timeout to stop after not receiving any new blocks.
+        length_change_callback: a function to call with arg (length) when the blockchain length changes.
     Returns:
         Blockchain object.
     """
     bm = BlockchainManager()
-    bm.sync(index_change_callback)
+    bm.sync(timeout, length_change_callback)
 
     return bm.blockchain()

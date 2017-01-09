@@ -28,8 +28,6 @@ def should_download_block_false(block_hash, block_index):
 
 class BlockchainManager(object):
     """Client to synchronise blockchain headers."""
-    sync_timeout = 3
-
     def __init__(self):
         """Initialise the blockchain manager."""
         self.bcs = BlockChainStore(user_config_dir('contourclient'))
@@ -38,30 +36,32 @@ class BlockchainManager(object):
     def _blockchain_change_callback(self, blockchain, ops):
         pass
 
-    def _sync_loop(self, index_change_callback):
-        index = 0
-        time_elapsed_since_index = 0
+    def _sync_loop(self, timeout, length_change_callback):
+        interval_time = 1
+        current_length = 0
+        time_elapsed_since_length_change = 0
         while True:
-            new_index = self.blockchain().index_for_hash(self.blockchain().last_block_hash())
-            if new_index != index:
-                time_elapsed_since_index = 0
-                index = new_index
-                if index_change_callback and new_index is not None:
-                    index_change_callback(index)
+            new_length = self.blockchain().length()
+            if current_length == new_length:
+                time_elapsed_since_length_change += interval_time
+                if time_elapsed_since_length_change > timeout:
+                    self.event_loop.stop()
+                    break
             else:
-                time_elapsed_since_index += 1
-            if time_elapsed_since_index > self.sync_timeout:
-                self.event_loop.stop()
-                self.event_loop.close()
-                break
-            time.sleep(1)
+                time_elapsed_since_length_change = 0
+                current_length = new_length
+                if length_change_callback:
+                    length_change_callback(current_length)
 
-    def sync(self, index_change_callback=None):
+            time.sleep(interval_time)
+
+    def sync(self, timeout, length_change_callback=None):
         """
         Synchronise the blockchain to the latest headers.
 
         Args:
-            index_change_callback: a function to call with args (index) when the latest blockchain index changes.
+            timeout: the timeout to stop after not receiving any new blocks.
+            length_change_callback: a function to call with arg (length) when the blockchain length changes.
         """
         self.client = Client(
             network=MAINNET,
@@ -72,7 +72,7 @@ class BlockchainManager(object):
         )
 
         self.event_loop = asyncio.get_event_loop()
-        t = threading.Thread(target=self._sync_loop, args=(index_change_callback,))
+        t = threading.Thread(target=self._sync_loop, args=(timeout, length_change_callback))
         t.start()
         self.event_loop.run_forever()
 
