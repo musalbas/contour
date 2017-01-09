@@ -103,7 +103,7 @@ def get_block_path_for_tx(tx):
         blocktx = block.txs[i]
         if blocktx.id() == tx.id():
             txindex = i
-        txhashes.append(blocktx.hash().encode('hex'))
+        txhashes.append(hexlify(blocktx.hash()).decode('utf8'))
 
     hash_function = DoubleSHA256
     mt = MerkleTree(txhashes, prehashed=True)
