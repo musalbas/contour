@@ -12,7 +12,7 @@ from pycoin.services.blockcypher import BlockcypherProvider
 from pycoin.encoding import double_sha256
 from merkle import MerkleTree, hash_function
 
-from localconfig import config
+from contourtools.localconfig import config
 
 
 class DoubleSHA256(object):

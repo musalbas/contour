@@ -6,9 +6,9 @@ import json
 import click
 from pycoin.tx import Tx
 
-import btc
-import tree
-from localconfig import config
+from contourtools import btc
+from contourtools import tree
+from contourtools.localconfig import config
 
 
 @click.group()

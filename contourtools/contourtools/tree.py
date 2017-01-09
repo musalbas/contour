@@ -6,7 +6,7 @@ import os
 from pycoin.tx import Tx
 from merkle import MerkleTree
 
-import btc
+from contourtools import btc
 
 
 def build_tree_from_directory(source_directory):
