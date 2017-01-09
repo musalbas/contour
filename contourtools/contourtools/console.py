@@ -108,7 +108,7 @@ def inclusionproof(batch_file, output_file, item):
     mt = tree.import_tree_from_json(batch_file_data)
     mt.build()
 
-    inclusionproof = tree.get_inclusion_proof(item)
+    inclusionproof = tree.get_inclusion_proof(mt, item)
 
     filehandle = open(output_file, 'w')
     filehandle.write(json.dumps(inclusionproof))
