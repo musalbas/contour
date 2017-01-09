@@ -1,11 +1,31 @@
 """API for Contour client."""
 
 from binascii import hexlify
+from hashlib import sha256
 
-from merkle import check_hex_chain
+from merkle import check_hex_chain, MerkleError
+import merkle
 from pycoin.block import BlockHeader
+from pycoin.encoding import double_sha256
+from pycoin.tx import Tx
 
 from contourclient.btcnet import BlockchainManager
+
+
+class DoubleSHA256(object):
+    """Class to double SHA256 hash data."""
+    def __init__(self, data):
+        """
+        Initialise hash.
+
+        Args:
+            data: the data to hash.
+        """
+        self.data = data
+
+    def digest(self):
+        """Returns the digest of the data."""
+        return double_sha256(self.data)
 
 
 def sync(timeout=5, length_change_callback=None):
@@ -49,6 +69,26 @@ def verify_inclusion_proof(proof):
 
     # Check that merkle root in the block merkle path matches the block
     if hexlify(blockheader.merkle_root).decode() != proof[1][1][-1][0]:
+        return (False, confirmations, hash_proving)
+
+    # Check the merkle path to the transaction is valid
+    merkle.hash_function = DoubleSHA256
+    try:
+        check_hex_chain(proof[1][1])
+    except MerkleError:
+        return (False, confirmations, hash_proving)
+
+    # Check merkle root in merkle path to item matches transaction OP_RETURN hash
+    tx = Tx.from_hex(proof[0])
+    op_return_data = hexlify(tx.tx_outs_as_spendable()[1].script).decode()[4:] # TODO improve this hack (conditions for verification are too strict)
+    if op_return_data != proof[2][-1][0]:
+        return (False, confirmations, hash_proving)
+
+    # Check merkle path to item whose hash is being verified is valid
+    merkle.hash_function = sha256
+    try:
+        check_hex_chain(proof[2])
+    except MerkleError:
         return (False, confirmations, hash_proving)
 
     return (True, confirmations, hash_proving)

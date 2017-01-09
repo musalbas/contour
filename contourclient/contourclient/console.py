@@ -46,7 +46,13 @@ def verifyproof(proof_file):
 
     proof = json.loads(proof_file_data)
     verification = api.verify_inclusion_proof(proof)
-    click.echo(verification)
+
+    if verification[0]:
+        click.echo("Verification successful.")
+        click.echo("Item hash: %s" % verification[2])
+        click.echo("Number of confirmations: %s" % verification[1])
+    else:
+        click.echo("Verification failed.")
 
 
 @cli.command()
