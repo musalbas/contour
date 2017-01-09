@@ -84,7 +84,7 @@ def btcattachblock(batch_file):
     mt = tree.import_tree_from_json(batch_file_data)
     mt.build()
 
-    click.echo("Downloading block for batch %s..." % mt.root)
+    click.echo("Downloading block for batch %s..." % hexlify(mt.root.val).decode())
     tree.btc_attach_block(mt)
 
     mt_json = tree.export_tree_as_json(mt)

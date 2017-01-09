@@ -57,7 +57,7 @@ def spendables_for_address(address):
     return provider.spendables_for_address(address)
 
 
-def block(hash):
+def block_by_hash(hash):
     """
     Get a block by hash.
 
@@ -96,7 +96,7 @@ def get_block_path_for_tx(tx):
     if block_hash is None:
         raise Exception("this transaction is unconfirmed")
 
-    block = block(block_hash)
+    block = block_by_hash(block_hash)
 
     txhashes = []
     for i in range(len(block.txs)):
@@ -109,7 +109,7 @@ def get_block_path_for_tx(tx):
     mt = MerkleTree(txhashes, prehashed=True)
     mt.build(bitcoin=True)
 
-    return (block.as_blockheader().get_hex(), mt.get_hex_chain(txindex))
+    return (block.as_blockheader().as_hex(), mt.get_hex_chain(txindex))
 
 
 def send_op_return_tx(key, message, fee=10000):
