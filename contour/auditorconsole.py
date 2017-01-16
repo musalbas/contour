@@ -1,12 +1,12 @@
-"""Console application for Contour client."""
-
+"""Console utilities for Contour auditor."""
+from binascii import hexlify
+import bson
 import logging
-import json
 import sys
 
 import click
 
-from contourclient import api
+from contour import auditor
 
 
 class DevNull:
@@ -38,18 +38,20 @@ def cli():
 
 @cli.command()
 @click.argument('proof_file')
-def verifyproof(proof_file):
+def verify(proof_file):
     """Verify an inclusion proof."""
-    filehandle = open(proof_file)
+    filehandle = open(proof_file, 'rb')
     proof_file_data = filehandle.read()
     filehandle.close()
 
-    proof = json.loads(proof_file_data)
-    verification = api.verify_inclusion_proof(proof)
+    proof_file_dict = bson.loads(proof_file_data)
+    proof = proof_file_dict['proof']
+    digest_verifying = proof_file_dict['hash']
+    verification = auditor.verify_inclusion_proof(proof, digest_verifying)
 
     if verification[0]:
         click.echo("Verification successful.")
-        click.echo("Item hash: %s" % verification[2])
+        click.echo("Item hash: %s" % hexlify(digest_verifying).decode())
         click.echo("Number of confirmations: %s" % verification[1])
     else:
         click.echo("Verification failed.")
@@ -61,5 +63,5 @@ def sync():
     sys.stderr = DevNull() # Suppress verbose errors and exceptions
 
     click.echo("Syncing blockchain. This may take a minute or two.")
-    blockchain = api.sync(length_change_callback=blockchain_length_change_callback)
+    blockchain = auditor.sync(length_change_callback=blockchain_length_change_callback)
     click.echo("Sync complete (no new blocks received in the past few seconds).")

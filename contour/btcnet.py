@@ -1,16 +1,15 @@
 """Bitcoin network operations."""
-
 import asyncio
 import threading
 import time
 
-from appdirs import user_config_dir
 from pycoin.blockchain.BlockChain import BlockChain
 from pycoinnet.util.BlockChainStore import BlockChainStore
 from pycoinnet.helpers.dnsbootstrap import dns_bootstrap_host_port_q
 from pycoinnet.helpers.networks import MAINNET
 
-from contourclient.btcclient import Client
+from contour.btcclient import Client
+from contour.localdata import data_dir
 
 
 def should_download_block_false(block_hash, block_index):
@@ -30,7 +29,7 @@ class BlockchainManager(object):
     """Client to synchronise blockchain headers."""
     def __init__(self):
         """Initialise the blockchain manager."""
-        self.bcs = BlockChainStore(user_config_dir('contourclient'))
+        self.bcs = BlockChainStore(data_dir)
         self.client = None
 
     def _blockchain_change_callback(self, blockchain, ops):

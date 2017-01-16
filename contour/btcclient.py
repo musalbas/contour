@@ -1,7 +1,7 @@
-# Adapted from pycoinnet.examples
-
 """
 A prototype of a custom bitcoin client with pluggables for callbacks.
+
+Adapted from pycoinnet.examples.
 
 PARAMETERS:
     - network (MAINNET)
@@ -35,7 +35,7 @@ from pycoinnet.util.TwoLevelDict import TwoLevelDict
 
 
 def block_chain_locker_callback(block_chain, ops):
-    LOCKED_MULTIPLE = 32
+    LOCKED_MULTIPLE = 1
     total_length = block_chain.length()
     locked_length = block_chain.locked_length()
     unlocked_length = total_length - locked_length
