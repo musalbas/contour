@@ -68,7 +68,7 @@ def block_hash_for_tx_id(tx_id):
     Returns:
         The block hash.
     """
-    if tx_id is not in config['block_hash_for_tx_id']:
+    if tx_id not in config['block_hash_for_tx_id']:
         result = requests.get('https://api.blockcypher.com/v1/btc/main/txs/%s?token=' % tx_id).json()
         if result['block_hash']:
             config['block_hash_for_tx_id'][tx_id] = result['block_hash']

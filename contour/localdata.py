@@ -21,7 +21,7 @@ except OSError:
 
 config = ConfigObj(os.path.join(data_dir, 'config'))
 
-if 'block_hash_for_tx_id' is not in config:
+if 'block_hash_for_tx_id' not in config:
     config['block_hash_for_tx_id'] = {}
 
 
