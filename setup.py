@@ -12,10 +12,12 @@ setup(
         'configobj',
         'requests',
         'bson',
+        'python-bitcoinrpc',
     ],
     entry_points = '''
         [console_scripts]
         contourauthority=contour.authorityconsole:cli
         contourauditor=contour.auditorconsole:cli
+        contourconfig=contour.configconsole:cli
     ''',
 )

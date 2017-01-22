@@ -72,11 +72,12 @@ def block_hash_for_tx_id(tx_id):
         result = requests.get('https://api.blockcypher.com/v1/btc/main/txs/%s?token=' % tx_id).json()
         if result['block_hash']:
             config['block_hash_for_tx_id'][tx_id] = result['block_hash']
+            config.write()
             return result['block_hash']
         else:
             return None
     else:
-        return config['block_hash_for_tx_id']
+        return config['block_hash_for_tx_id'][tx_id]
 
 
 def get_tx_proof(tx_id):
