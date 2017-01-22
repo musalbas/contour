@@ -2,6 +2,7 @@
 import os
 
 from appdirs import user_config_dir
+from configobj import ConfigObj
 
 data_dir = user_config_dir('contour')
 blocks_dir = os.path.join(data_dir, 'blocks_cache')
@@ -17,6 +18,11 @@ try:
 except OSError:
     if not os.path.isdir(blocks_dir):
         raise
+
+config = ConfigObj(os.path.join(data_dir, 'config'))
+
+if 'block_hash_for_tx_id' is not in config:
+    config['block_hash_for_tx_id'] = {}
 
 
 def put_block(digest, raw_block):

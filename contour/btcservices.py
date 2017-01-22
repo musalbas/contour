@@ -11,7 +11,7 @@ from pycoin.tx.tx_utils import sign_tx
 from pycoin.tx.TxOut import TxOut, standard_tx_out_script
 import requests
 
-from contour.localdata import get_block, put_block
+from contour.localdata import config, get_block, put_block
 from contour.merkle import MerkleTree
 from contour.utils import DoubleSHA256
 
@@ -68,8 +68,15 @@ def block_hash_for_tx_id(tx_id):
     Returns:
         The block hash.
     """
-    result = requests.get('https://api.blockcypher.com/v1/btc/main/txs/%s?token=' % tx_id).json()
-    return result['block_hash'] if 'block_hash' in result else None
+    if tx_id is not in config['block_hash_for_tx_id']:
+        result = requests.get('https://api.blockcypher.com/v1/btc/main/txs/%s?token=' % tx_id).json()
+        if result['block_hash']:
+            config['block_hash_for_tx_id'][tx_id] = result['block_hash']
+            return result['block_hash']
+        else:
+            return None
+    else:
+        return config['block_hash_for_tx_id']
 
 
 def get_tx_proof(tx_id):
