@@ -53,6 +53,7 @@ def verify(proof_file):
         click.echo("Verification successful.")
         click.echo("Item hash: %s" % hexlify(digest_verifying).decode())
         click.echo("Number of confirmations: %s" % verification[1])
+        click.echo("Bitcoin address: %s" % verification[2])
     else:
         click.echo("Verification failed.")
 

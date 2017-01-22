@@ -34,8 +34,12 @@ def verify_inclusion_proof(proof, digest_verifying):
         proof: the proof information tuple.
         digest_verifying: the hash of the statement that is being verified as included.
     Returns:
-        A tuple where the first element is a boolean representing if the proof verifies, and the second element is the number of confirmations the proof's block has.
+        A tuple where the first element is a boolean representing if the proof verifies, the second element is the number of confirmations the proof's block has and the third element is the Bitcoin address of the transaction.
     """
+    # Parse transaction
+    tx = Tx.parse(io.BytesIO(proof[2]))
+    address = tx.txs_in[0].bitcoin_address()
+
     # Check that the block is in the blockchain, and get confirmations
     blockheader = BlockHeader.parse(io.BytesIO(proof[0]))
     bm = BlockchainManager()
@@ -43,22 +47,21 @@ def verify_inclusion_proof(proof, digest_verifying):
     block_index = blockchain.index_for_hash(blockheader.hash())
     if not block_index:
         # Block not found in blockchain; fail verification
-        return (False, 0)
+        return (False, 0, address)
     latest_block_index = blockchain.index_for_hash(blockchain.last_block_hash())
     confirmations = latest_block_index - block_index
 
     # Check the merkle path to the transaction is valid
-    tx = Tx.parse(io.BytesIO(proof[2]))
     try:
         check_inclusion_proof(proof[1], blockheader.merkle_root, tx.hash(), hash_function=DoubleSHA256)
     except MerkleError:
-        return (False, confirmations)
+        return (False, confirmations, address)
 
     # Check merkle path to item whose hash is being verified is valid
     op_return_data = tx.tx_outs_as_spendable()[1].script[-32:] # TODO improve this hack (conditions for verification are too strict)
     try:
         check_inclusion_proof(proof[3], op_return_data, digest_verifying)
     except MerkleError:
-        return (False, confirmations)
+        return (False, confirmations, address)
 
-    return (True, confirmations)
+    return (True, confirmations, address)
