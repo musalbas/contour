@@ -19,5 +19,6 @@ setup(
         contourauthority=contour.authorityconsole:cli
         contourauditor=contour.auditorconsole:cli
         contourconfig=contour.configconsole:cli
+        contourmonitor=contour.monitorconsole:cli
     ''',
 )
