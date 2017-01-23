@@ -20,7 +20,7 @@ if __name__ == '__main__':
     blockchain = BlockchainManager().blockchain()
 
     time_lengths = []
-    for i in range(1000000):
+    for i in range(1000):
         print("Run %s" % (i+1))
         start_time = time.time()
         verification = auditor.verify_inclusion_proof(proof, digest_verifying, blockchain=blockchain)
