@@ -26,24 +26,28 @@ def sync(timeout=5, length_change_callback=None):
     return bm.blockchain()
 
 
-def verify_inclusion_proof(proof, digest_verifying):
+def verify_inclusion_proof(proof, digest_verifying, blockchain=None):
     """
     Verifies an inclusion proof.
 
     Args:
         proof: the proof information tuple.
         digest_verifying: the hash of the statement that is being verified as included.
+        blockchain: Blockchain object (optional).
     Returns:
         A tuple where the first element is a boolean representing if the proof verifies, the second element is the number of confirmations the proof's block has and the third element is the Bitcoin address of the transaction.
     """
+    # Get blockchain
+    if blockchain is None:
+        bm = BlockchainManager()
+        blockchain = bm.blockchain()
+
     # Parse transaction
     tx = Tx.parse(io.BytesIO(proof[2]))
     address = tx.txs_in[0].bitcoin_address()
 
     # Check that the block is in the blockchain, and get confirmations
     blockheader = BlockHeader.parse(io.BytesIO(proof[0]))
-    bm = BlockchainManager()
-    blockchain = bm.blockchain()
     block_index = blockchain.index_for_hash(blockheader.hash())
     if not block_index:
         # Block not found in blockchain; fail verification
