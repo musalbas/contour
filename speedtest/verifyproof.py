@@ -1,5 +1,6 @@
 """Speed test for inclusion proof verification."""
 import time
+import statistics
 import sys
 
 import bson
@@ -20,7 +21,7 @@ if __name__ == '__main__':
     blockchain = BlockchainManager().blockchain()
 
     time_lengths = []
-    for i in range(1000):
+    for i in range(1000000):
         print("Run %s" % (i+1))
         start_time = time.time()
         verification = auditor.verify_inclusion_proof(proof, digest_verifying, blockchain=blockchain)
@@ -28,4 +29,6 @@ if __name__ == '__main__':
         time_lengths.append(end_time - start_time)
 
     mean = sum(time_lengths) / len(time_lengths)
+    sd = statistics.stdev(time_lengths)
     print("Average time: %ss" % mean)
+    print("SD: %s" % sd)

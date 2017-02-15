@@ -1,6 +1,7 @@
 """Speed test for generating an OP_RETURN transaction."""
 from binascii import hexlify, unhexlify
 import time
+import statistics
 import sys
 
 from pycoin.key import Key
@@ -52,4 +53,6 @@ if __name__ == '__main__':
         time_lengths.append(end_time - start_time)
 
     mean = sum(time_lengths) / len(time_lengths)
+    sd = statistics.stdev(time_lengths)
     print("Average time: %ss" % mean)
+    print("SD: %s" % sd)

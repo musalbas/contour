@@ -1,10 +1,10 @@
-"""Speed test for building merkle proofs."""
+"""Speed test for verifying merkle proofs."""
 from binascii import unhexlify
 import time
 import statistics
 import sys
 
-from contour.merkle import MerkleTree
+from contour.merkle import MerkleTree, check_hex_chain
 
 if __name__ == '__main__':
     num_items = int(sys.argv[1])
@@ -19,10 +19,11 @@ if __name__ == '__main__':
     mt.build()
 
     time_lengths = []
-    for i in range(1000000):
+    proof = mt.get_hex_chain(0)
+    for i in range(100000):
         print("Run %s" % (i+1))
         start_time = time.time()
-        mt.get_inclusion_proof(0)
+        check_hex_chain(proof)
         end_time = time.time()
         time_lengths.append(end_time - start_time)
 
